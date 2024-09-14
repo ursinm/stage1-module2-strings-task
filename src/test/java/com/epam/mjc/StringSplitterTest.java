@@ -1,12 +1,11 @@
 package com.epam.mjc;
 
-import junit.framework.TestCase;
 import org.junit.Test;
-
 import java.util.*;
 import java.util.stream.Collectors;
+import static org.junit.Assert.assertEquals;
 
-public class StringSplitterTest extends TestCase {
+public class StringSplitterTest {
     private static final int RANDOM_CASES_COUNT = 10;
     private StringSplitter splitter = new StringSplitter();
     private Random random = new Random();
@@ -33,19 +32,24 @@ public class StringSplitterTest extends TestCase {
         Set<String> delimiters = selectDelimiters(delimitersNumber);
         StringBuilder all = new StringBuilder();
         List<String> expectedResult = new ArrayList<>();
-        String current = "";
-        for(int i = 0; i < 100; i++) {
+        StringBuilder current = new StringBuilder();
+
+        for (int i = 0; i < 100; i++) {
             String token = allTokens.get(random.nextInt(allTokens.size()));
             all.append(token);
-            if(delimiters.contains(token)) {
-                expectedResult.add(current);
-                current = "";
+            if (delimiters.contains(token)) {
+                if (current.length() > 0) {
+                    expectedResult.add(current.toString());
+                    current.setLength(0);
+                }
             } else {
-                current += token;
+                current.append(token);
             }
         }
-        expectedResult.add(current);
-        expectedResult = expectedResult.stream().filter(s -> s.length() > 0).collect(Collectors.toList());
+        if (current.length() > 0) {
+            expectedResult.add(current.toString());
+        }
+        
         List<String> actualResult = splitter.splitByDelimiters(all.toString(), delimiters);
         assertEquals(expectedResult, actualResult);
     }
@@ -53,10 +57,6 @@ public class StringSplitterTest extends TestCase {
     private Set<String> selectDelimiters(int delimitersNumber) {
         List<String> copy = new ArrayList<>(allTokens);
         Collections.shuffle(copy);
-        Set<String> delimiters = new HashSet<>();
-        for (int i = 0; i < delimitersNumber; i++) {
-            delimiters.add(copy.remove(0));
-        }
-        return delimiters;
+        return new HashSet<>(copy.subList(0, delimitersNumber));
     }
 }

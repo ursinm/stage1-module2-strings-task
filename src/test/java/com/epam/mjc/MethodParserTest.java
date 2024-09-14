@@ -1,19 +1,19 @@
 package com.epam.mjc;
 
-import junit.framework.TestCase;
 import org.junit.Test;
+import static org.junit.Assert.*;
 
-public class MethodParserTest extends TestCase {
+public class MethodParserTest {
 
     private MethodParser parser = new MethodParser();
 
     @Test
     public void testParseFunction() {
         MethodSignature signature = parser.parseFunction("private void log(String logString, LogLevel level, Context context)");
-        assertEquals(signature.getAccessModifier(), "private");
-        assertEquals(signature.getReturnType(), "void");
-        assertEquals(signature.getMethodName(), "log");
-        assertEquals(signature.getArguments().size(), 3);
+        assertEquals("private", signature.getAccessModifier());
+        assertEquals("void", signature.getReturnType());
+        assertEquals("log", signature.getMethodName());
+        assertEquals(3, signature.getArguments().size());
         assertArgument(signature.getArguments().get(0), "String", "logString");
         assertArgument(signature.getArguments().get(1), "LogLevel", "level");
         assertArgument(signature.getArguments().get(2), "Context", "context");
@@ -23,9 +23,9 @@ public class MethodParserTest extends TestCase {
     public void testParseFunctionNoAccessModifier() {
         MethodSignature signature = parser.parseFunction("String repeat(String value, int times)");
         assertNull(signature.getAccessModifier());
-        assertEquals(signature.getReturnType(), "String");
-        assertEquals(signature.getMethodName(), "repeat");
-        assertEquals(signature.getArguments().size(), 2);
+        assertEquals("String", signature.getReturnType());
+        assertEquals("repeat", signature.getMethodName());
+        assertEquals(2, signature.getArguments().size());
         assertArgument(signature.getArguments().get(0), "String", "value");
         assertArgument(signature.getArguments().get(1), "int", "times");
     }
@@ -33,14 +33,14 @@ public class MethodParserTest extends TestCase {
     @Test
     public void testParseFunctionNoArguments() {
         MethodSignature signature = parser.parseFunction("public float mark()");
-        assertEquals(signature.getAccessModifier(), "public");
-        assertEquals(signature.getReturnType(), "float");
-        assertEquals(signature.getMethodName(), "mark");
-        assertEquals(signature.getArguments().size(), 0);
+        assertEquals("public", signature.getAccessModifier());
+        assertEquals("float", signature.getReturnType());
+        assertEquals("mark", signature.getMethodName());
+        assertEquals(0, signature.getArguments().size());
     }
 
     private void assertArgument(MethodSignature.Argument argument, String type, String name) {
-        assertEquals(argument.getType(), type);
-        assertEquals(argument.getName(), name);
+        assertEquals(type, argument.getType());
+        assertEquals(name, argument.getName());
     }
 }
